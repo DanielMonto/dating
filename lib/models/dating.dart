@@ -6,5 +6,6 @@ part 'dating.g.dart';
 class Dating {
   Id id = Isar.autoIncrement;
   late DateTime initDate;
-  late DateTime date;
+  late String datingName;
+  bool datingCompleted = false;
 }

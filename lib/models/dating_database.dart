@@ -3,7 +3,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:isar/isar.dart';
 import 'package:flutter/material.dart';
 
-class DatingDataBase extends ChangeNotifier {
+class DatingDataBase with ChangeNotifier {
   static late Isar isar;
   final List<Dating> currentDatings = [];
 
@@ -12,10 +12,12 @@ class DatingDataBase extends ChangeNotifier {
     isar = await Isar.open([DatingSchema], directory: dir.path);
   }
 
-  Future<void> addDating(DateTime dateChooseFromUser) async {
-    final newDating = Dating()..date = dateChooseFromUser;
+  Future<void> addDating(
+    DateTime initDateChooseFromUser,
+  ) async {
+    final newDating = Dating()..initDate = initDateChooseFromUser;
     await isar.writeTxn(() => isar.datings.put(newDating));
-    fetchDatings();
+    await fetchDatings();
   }
 
   Future<void> fetchDatings() async {
@@ -25,13 +27,15 @@ class DatingDataBase extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateDating(int id, DateTime newDateChooseFroUser) async {
+  Future<void> updateDatingInitDate(
+    int id,
+    DateTime newInitDateFromUser,
+  ) async {
     final existingDating = await isar.datings.get(id);
-    if (existingDating != null) {
-      existingDating.date = newDateChooseFroUser;
-      await isar.writeTxn(() => isar.datings.put(existingDating));
-      await fetchDatings();
-    }
+    if (existingDating == null) return;
+    existingDating.initDate = newInitDateFromUser;
+    await isar.writeTxn(() => isar.datings.put(existingDating));
+    await fetchDatings();
   }
 
   Future<void> deleteDating(int id) async {
