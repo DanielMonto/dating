@@ -1,9 +1,9 @@
-import 'package:date/models/dating.dart';
+import 'package:process/models/process.dart';
 import 'package:flutter/material.dart';
 
-class DatingCard extends StatelessWidget {
-  final Dating dating;
-  const DatingCard({super.key, required this.dating});
+class ProcessCard extends StatelessWidget {
+  final Process process;
+  const ProcessCard({super.key, required this.process});
 
   @override
   Widget build(BuildContext context) {
