@@ -2,5 +2,60 @@
     "@@locale":"en",
     "title": "Processes",
     "noneProcessAddedYet":"You can add a process by the add button below",
-    "changeLanguage":"Cambiar a español"
+    "changeLanguage":"Cambiar a español",
+    "years":"Years",
+    "months":"Months",
+    "weeks":"Weeks",
+    "days":"Days",
+    "hour":"Hour",
+    "minutes":"Minutes",
+    "seconds":"Seconds",
+    "createNewProcess": "Create process",
+    "cancel":"Cancel",
+    "create":"Create",
+    "delete":"Delete",
+    "update":"Update",
+    "change":"Change",
+    "initDate":"Init date",
+    "initHour":"Init hour",
+    "nameYourProcess":"Name of process",
+    "dateAsString":"{weekDay}, {month} {numberDay}, {year}",
+    "@dateAsString":{
+        "placeholders": {
+            "weekDay":{
+                "type": "String"
+            },
+            "month":{
+                "type": "String"
+            },
+            "numberDay":{
+                "type": "String"
+            },
+            "year":{
+                "type": "String"
+            }
+        }
+    },
+    "monday": "Monday",
+    "tuesday": "Tuesday",
+    "wednesday": "Wednesday",
+    "thursday": "Thursday",
+    "friday": "Friday",
+    "saturday": "Saturday",
+    "sunday": "Sunday",
+    "january": "January",
+    "february": "February",
+    "march": "March",
+    "april": "April",
+    "may": "May",
+    "june": "June",
+    "july": "July",
+    "august": "August",
+    "september": "September",
+    "october": "October",
+    "november": "November",
+    "december": "December",
+    "am": "AM",
+    "pm": "PM",
+    "started": "Started"
 }

@@ -1,6 +1,7 @@
 import 'package:process/models/process.dart';
 import 'package:process/models/process_database.dart';
-import 'package:process/providers/language_provider.dart';
+import 'package:process/widgets/create_process_dialog.dart';
+import 'package:process/widgets/main_drawer.dart';
 import 'package:process/widgets/process_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
@@ -14,24 +15,18 @@ class ProcessesPage extends StatefulWidget {
 }
 
 class _ProcessesPageState extends State<ProcessesPage> {
-  // DateTime? _initDateController;
-
   @override
   void initState() {
     super.initState();
-    readProccurrentProcess();
+    readProcess();
   }
 
-  void readProccurrentProcess() {
+  void readProcess() {
     context.read<ProcessDataBase>().fetchProcess();
   }
 
   void createNewProcess() async {
-    await showDatePicker(
-      context: context,
-      firstDate: DateTime(0),
-      lastDate: DateTime(3000),
-    );
+    showDialog(context: context, builder: (context) => CreateProcessDialog());
   }
 
   void updateProcess() {}
@@ -39,7 +34,6 @@ class _ProcessesPageState extends State<ProcessesPage> {
   void deleteProcess() {}
   @override
   Widget build(BuildContext context) {
-    //////// CONTINUE https://docs.flutter.dev/ui/accessibility-and-internationalization/internationalization
     final processDatabase = context.watch<ProcessDataBase>();
     List<Process> currentProcess = processDatabase.currentProcess;
     return Scaffold(
@@ -51,23 +45,7 @@ class _ProcessesPageState extends State<ProcessesPage> {
         onPressed: createNewProcess,
         child: const Icon(Icons.add),
       ),
-      drawer: Drawer(
-        child: Column(
-          children: [
-            DrawerHeader(
-              child: Icon(
-                size: 50,
-                Icons.punch_clock,
-              ),
-            ),
-            ListTile(
-              title: Text(AppLocalizations.of(context)!.changeLanguage),
-              leading: Icon(Icons.language),
-              onTap: context.read<LanguageProvider>().toggleLanguage,
-            ),
-          ],
-        ),
-      ),
+      drawer: MainDrawer(),
       body: currentProcess.isNotEmpty
           ? ListView.builder(
               itemCount: currentProcess.length,
@@ -77,14 +55,15 @@ class _ProcessesPageState extends State<ProcessesPage> {
             )
           : Center(
               child: Column(
-              children: [
-                Text(AppLocalizations.of(context)!.noneProcessAddedYet),
-                IconButton(
-                  onPressed: createNewProcess,
-                  icon: Icon(Icons.add),
-                ),
-              ],
-            )),
+                children: [
+                  Text(AppLocalizations.of(context)!.noneProcessAddedYet),
+                  IconButton(
+                    onPressed: createNewProcess,
+                    icon: Icon(Icons.add),
+                  ),
+                ],
+              ),
+            ),
     );
   }
 }

@@ -12,10 +12,13 @@ class ProcessDataBase with ChangeNotifier {
     isar = await Isar.open([ProcessSchema], directory: dir.path);
   }
 
-  Future<void> addProcess(
-    DateTime initDateChooseFromUser,
-  ) async {
-    final newProcess = Process()..initDate = initDateChooseFromUser;
+  Future<void> addProcess({
+    required DateTime initDateChooseFromUser,
+    required String processNameFromUser,
+  }) async {
+    final newProcess = Process()
+      ..initDate = initDateChooseFromUser
+      ..processName = processNameFromUser;
     await isar.writeTxn(() => isar.process.put(newProcess));
     await fetchProcess();
   }
@@ -27,18 +30,22 @@ class ProcessDataBase with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateProcessInitDate(
-    int id,
-    DateTime newInitDateFromUser,
-  ) async {
+  Future<void> updateProcessInitDate({
+    required int id,
+    required DateTime newInitDateFromUser,
+    required String newProcessNameFromUser,
+    required bool processCompletedFromUser,
+  }) async {
     final existingProcess = await isar.process.get(id);
     if (existingProcess == null) return;
     existingProcess.initDate = newInitDateFromUser;
+    existingProcess.processName = newProcessNameFromUser;
+    existingProcess.processCompleted = processCompletedFromUser;
     await isar.writeTxn(() => isar.process.put(existingProcess));
     await fetchProcess();
   }
 
-  Future<void> deleteProcess(int id) async {
+  Future<void> deleteProcess({required int id}) async {
     await isar.writeTxn(() => isar.process.delete(id));
     await fetchProcess();
   }
