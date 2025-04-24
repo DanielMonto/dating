@@ -1,4 +1,4 @@
-import 'package:process/processes_page.dart';
+import 'package:process/pages/processes_page.dart';
 import 'package:process/models/process_database.dart';
 import 'package:process/providers/language_provider.dart';
 import 'package:flutter/material.dart';
