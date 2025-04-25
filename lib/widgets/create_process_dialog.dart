@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:process/func.dart';
 import 'package:process/models/process_database.dart';
 import 'package:provider/provider.dart';
 
@@ -53,8 +54,8 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
     };
     String dateTimeAsString = appLocalizations.dateAsString(
       weekDays[_dateController.weekday] ?? '',
-      months[_dateController.month] ?? '',
-      '${_dateController.day}',
+      addZeroIfLessThanTen(months[_dateController.month]),
+      addZeroIfLessThanTen(_dateController.day),
       '${_dateController.year}',
     );
     return dateTimeAsString;
@@ -63,8 +64,8 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
   String hourTimeToString() {
     AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     String hourTimeAsString = _dateController.hour <= 12
-        ? '${_dateController.hour}:${_dateController.minute} ${appLocalizations.am}'
-        : '${_dateController.hour - 12}:${_dateController.minute} ${appLocalizations.pm}';
+        ? '${_dateController.hour}:${addZeroIfLessThanTen(_dateController.minute)} ${appLocalizations.am}'
+        : '${_dateController.hour - 12}:${addZeroIfLessThanTen(_dateController.minute)} ${appLocalizations.pm}';
     return hourTimeAsString;
   }
 
@@ -94,68 +95,84 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
     });
   }
 
+  void addProcess(BuildContext context) {
+    context.read<ProcessDataBase>().addProcess(
+        initDateChooseFromUser: _dateController,
+        processNameFromUser: _processNameController.text);
+    _processNameController.clear();
+    Navigator.of(context).pop();
+  }
+
   @override
   Widget build(BuildContext context) {
     String dateAsString = dateTimeToString();
     String hourAsString = hourTimeToString();
+    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: Text(AppLocalizations.of(context)!.createNewProcess),
-      content: Column(
-        children: [
-          TextField(
-            controller: _processNameController,
-            decoration: InputDecoration(
-                label: Text(AppLocalizations.of(context)!.nameYourProcess)),
-          ),
-          Text(AppLocalizations.of(context)!.initDate),
-          TextButton.icon(
-            onPressed: () async {
-              DateTime? datePicked = await showDatePicker(
-                context: context,
-                firstDate: DateTime(-3000),
-                lastDate: DateTime.now(),
-              );
-              changeDate(datePicked);
-            },
-            style: TextButton.styleFrom(
-              side: BorderSide(
-                color: Colors.white30,
-                width: 1.5,
+      title: Text(appLocalizations.createNewProcess),
+      content: SizedBox(
+        height: 200,
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              TextField(
+                controller: _processNameController,
+                decoration: InputDecoration(
+                    label: Text(appLocalizations.nameYourProcess)),
               ),
-            ),
-            icon: Icon(Icons.calendar_today),
-            label: Text(dateAsString),
-          ),
-          Text(AppLocalizations.of(context)!.initHour),
-          TextButton.icon(
-            onPressed: () async {
-              TimeOfDay? timePicked = await showTimePicker(
-                context: context,
-                initialTime: TimeOfDay.now(),
-                builder: (BuildContext context, Widget? child) {
-                  return Localizations.override(
+              Text(appLocalizations.initDate),
+              TextButton.icon(
+                onPressed: () async {
+                  DateTime? datePicked = await showDatePicker(
                     context: context,
-                    locale: Locale('en'),
-                    child: MediaQuery(
-                      data: MediaQuery.of(context)
-                          .copyWith(alwaysUse24HourFormat: false),
-                      child: child!,
-                    ),
+                    firstDate: DateTime(-3000),
+                    lastDate: DateTime.now(),
                   );
+                  changeDate(datePicked);
                 },
-              );
-              changeHour(timePicked);
-            },
-            style: TextButton.styleFrom(
-              side: BorderSide(
-                color: Colors.white30,
-                width: 1.5,
+                style: TextButton.styleFrom(
+                  side: BorderSide(
+                    color: Colors.white30,
+                    width: 1.5,
+                  ),
+                ),
+                icon: Icon(Icons.calendar_today),
+                label: Text(dateAsString),
               ),
-            ),
-            icon: Icon(Icons.access_alarm),
-            label: Text(hourAsString),
+              Text(appLocalizations.initHour),
+              TextButton.icon(
+                onPressed: () async {
+                  TimeOfDay? timePicked = await showTimePicker(
+                    context: context,
+                    initialTime: TimeOfDay(
+                        hour: _dateController.hour,
+                        minute: _dateController.minute),
+                    builder: (BuildContext context, Widget? child) {
+                      return Localizations.override(
+                        context: context,
+                        locale: Locale('en'),
+                        child: MediaQuery(
+                          data: MediaQuery.of(context)
+                              .copyWith(alwaysUse24HourFormat: false),
+                          child: child!,
+                        ),
+                      );
+                    },
+                  );
+                  changeHour(timePicked);
+                },
+                style: TextButton.styleFrom(
+                  side: BorderSide(
+                    color: Colors.white30,
+                    width: 1.5,
+                  ),
+                ),
+                icon: Icon(Icons.access_alarm),
+                label: Text(hourAsString),
+              ),
+            ],
           ),
-        ],
+        ),
       ),
       actions: [
         MaterialButton(
@@ -163,19 +180,53 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
             _processNameController.clear();
             Navigator.of(context).pop();
           },
-          child: Text(AppLocalizations.of(context)!.cancel),
+          child: Text(appLocalizations.cancel),
         ),
         MaterialButton(
           onPressed: () {
-            if (_processNameController.text.isNotEmpty) {
-              context.read<ProcessDataBase>().addProcess(
-                  initDateChooseFromUser: _dateController,
-                  processNameFromUser: _processNameController.text);
-              _processNameController.clear();
+            if (_processNameController.text.isEmpty) {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: Text(appLocalizations.giveAName),
+                  content: SizedBox(
+                    height: 150,
+                    child: Column(
+                      children: [
+                        Text(appLocalizations.giveAProcessName),
+                        TextField(
+                          controller: _processNameController,
+                          decoration: InputDecoration(
+                            label: Text(appLocalizations.nameYourProcess),
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                  actions: [
+                    MaterialButton(
+                      onPressed: () {
+                        _processNameController.clear();
+                        Navigator.of(context).pop();
+                      },
+                      child: Text(appLocalizations.cancel),
+                    ),
+                    MaterialButton(
+                      onPressed: () {
+                        addProcess(context);
+                      },
+                      child: Text(appLocalizations.create),
+                    )
+                  ],
+                ),
+              ).then((_) {
+                Navigator.of(context).pop();
+              });
+            } else if (_processNameController.text.isNotEmpty) {
+              addProcess(context);
             }
-            Navigator.of(context).pop();
           },
-          child: Text(AppLocalizations.of(context)!.create),
+          child: Text(appLocalizations.create),
         ),
       ],
     );

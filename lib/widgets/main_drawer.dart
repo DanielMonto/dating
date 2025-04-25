@@ -17,6 +17,10 @@ class MainDrawer extends StatelessWidget {
               Icons.access_alarm_sharp,
             ),
           ),
+          Expanded(
+              child: Column(
+            children: [],
+          )),
           ListTile(
             title: Text(AppLocalizations.of(context)!.changeLanguage),
             leading: Icon(Icons.language),

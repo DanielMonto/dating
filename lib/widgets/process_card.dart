@@ -1,3 +1,4 @@
+import 'package:process/func.dart';
 import 'package:process/models/process.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +44,8 @@ class ProcessCard extends StatelessWidget {
   String hourTimeToString(BuildContext context) {
     AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     String hourTimeAsString = process.initDate.hour <= 12
-        ? '${process.initDate.hour}:${process.initDate.minute} ${appLocalizations.am}'
-        : '${process.initDate.hour - 12}:${process.initDate.minute} ${appLocalizations.pm}';
+        ? '${process.initDate.hour}:${addZeroIfLessThanTen(process.initDate.minute)} ${appLocalizations.am}'
+        : '${process.initDate.hour - 12}:${addZeroIfLessThanTen(process.initDate.minute)} ${appLocalizations.pm}';
     return hourTimeAsString;
   }
 

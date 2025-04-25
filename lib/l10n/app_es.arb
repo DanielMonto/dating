@@ -57,5 +57,7 @@
     "december": "Diciembre",
     "am": "a. m.",
     "pm": "p. m.",
-    "started": "Inició"
+    "started": "Inició",
+    "giveAName":"Por favor un nombre",
+    "giveAProcessName":"Escribe un nombre para el proceso"
 }

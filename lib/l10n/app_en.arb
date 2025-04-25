@@ -57,5 +57,7 @@
     "december": "December",
     "am": "AM",
     "pm": "PM",
-    "started": "Started"
+    "started": "Started",
+    "giveAName": "Please give a name",
+    "giveAProcessName":"Write a name for the process"
 }
