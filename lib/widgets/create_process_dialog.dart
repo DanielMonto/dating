@@ -27,48 +27,6 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
     super.dispose();
   }
 
-  String dateTimeToString() {
-    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-    Map<int, String> weekDays = {
-      1: appLocalizations.monday,
-      2: appLocalizations.tuesday,
-      3: appLocalizations.wednesday,
-      4: appLocalizations.thursday,
-      5: appLocalizations.friday,
-      6: appLocalizations.saturday,
-      7: appLocalizations.sunday,
-    };
-    Map<int, String> months = {
-      1: appLocalizations.january,
-      2: appLocalizations.february,
-      3: appLocalizations.march,
-      4: appLocalizations.april,
-      5: appLocalizations.may,
-      6: appLocalizations.june,
-      7: appLocalizations.july,
-      8: appLocalizations.august,
-      9: appLocalizations.september,
-      10: appLocalizations.october,
-      11: appLocalizations.november,
-      12: appLocalizations.december,
-    };
-    String dateTimeAsString = appLocalizations.dateAsString(
-      weekDays[_dateController.weekday] ?? '',
-      addZeroIfLessThanTen(months[_dateController.month]),
-      addZeroIfLessThanTen(_dateController.day),
-      '${_dateController.year}',
-    );
-    return dateTimeAsString;
-  }
-
-  String hourTimeToString() {
-    AppLocalizations appLocalizations = AppLocalizations.of(context)!;
-    String hourTimeAsString = _dateController.hour <= 12
-        ? '${_dateController.hour}:${addZeroIfLessThanTen(_dateController.minute)} ${appLocalizations.am}'
-        : '${_dateController.hour - 12}:${addZeroIfLessThanTen(_dateController.minute)} ${appLocalizations.pm}';
-    return hourTimeAsString;
-  }
-
   void changeHour(TimeOfDay? newHour) {
     if (newHour == null) return;
     setState(() {
@@ -105,8 +63,8 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
 
   @override
   Widget build(BuildContext context) {
-    String dateAsString = dateTimeToString();
-    String hourAsString = hourTimeToString();
+    String dateAsString = dateTimeToString(context, _dateController);
+    String hourAsString = hourTimeToString(context, _dateController);
     AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return AlertDialog(
       title: Text(appLocalizations.createNewProcess),

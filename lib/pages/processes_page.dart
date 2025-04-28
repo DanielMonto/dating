@@ -2,7 +2,7 @@ import 'package:process/models/process.dart';
 import 'package:process/models/process_database.dart';
 import 'package:process/widgets/create_process_dialog.dart';
 import 'package:process/widgets/main_drawer.dart';
-import 'package:process/widgets/process_card.dart';
+import 'package:process/widgets/process_card/process_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:provider/provider.dart';
@@ -25,13 +25,10 @@ class _ProcessesPageState extends State<ProcessesPage> {
     context.read<ProcessDataBase>().fetchProcess();
   }
 
-  void createNewProcess() async {
+  void createNewProcess() {
     showDialog(context: context, builder: (context) => CreateProcessDialog());
   }
 
-  void updateProcess() {}
-
-  void deleteProcess() {}
   @override
   Widget build(BuildContext context) {
     final processDatabase = context.watch<ProcessDataBase>();
