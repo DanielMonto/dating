@@ -1,5 +1,6 @@
 import 'package:process/pages/processes_page.dart';
 import 'package:process/models/process_database.dart';
+import 'package:process/providers/global_timer.dart';
 import 'package:process/providers/language_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,6 +15,7 @@ void main() async {
     providers: [
       ChangeNotifierProvider(create: (context) => ProcessDataBase()),
       ChangeNotifierProvider(create: (context) => LanguageProvider()),
+      ChangeNotifierProvider(create: (context) => GlobalTimer()),
     ],
     child: const MyApp(),
   ));

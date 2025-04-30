@@ -84,7 +84,7 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
                   DateTime? datePicked = await showDatePicker(
                     context: context,
                     firstDate: DateTime(-3000),
-                    lastDate: DateTime.now(),
+                    lastDate: _dateController,
                   );
                   changeDate(datePicked);
                 },
@@ -143,43 +143,8 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
         MaterialButton(
           onPressed: () {
             if (_processNameController.text.isEmpty) {
-              showDialog(
-                context: context,
-                builder: (context) => AlertDialog(
-                  title: Text(appLocalizations.giveAName),
-                  content: SizedBox(
-                    height: 150,
-                    child: Column(
-                      children: [
-                        Text(appLocalizations.giveAProcessName),
-                        TextField(
-                          controller: _processNameController,
-                          decoration: InputDecoration(
-                            label: Text(appLocalizations.nameYourProcess),
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  actions: [
-                    MaterialButton(
-                      onPressed: () {
-                        _processNameController.clear();
-                        Navigator.of(context).pop();
-                      },
-                      child: Text(appLocalizations.cancel),
-                    ),
-                    MaterialButton(
-                      onPressed: () {
-                        addProcess(context);
-                      },
-                      child: Text(appLocalizations.create),
-                    )
-                  ],
-                ),
-              ).then((_) {
-                Navigator.of(context).pop();
-              });
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Center(child: Text(appLocalizations.giveAName))));
             } else if (_processNameController.text.isNotEmpty) {
               addProcess(context);
             }

@@ -5,10 +5,15 @@ import 'package:provider/provider.dart';
 import 'package:flutter/material.dart';
 import 'package:process/widgets/process_card/process_card_counter.dart';
 
-class ProcessCard extends StatelessWidget {
+class ProcessCard extends StatefulWidget {
   final Process process;
   const ProcessCard({super.key, required this.process});
 
+  @override
+  State<ProcessCard> createState() => _ProcessCardState();
+}
+
+class _ProcessCardState extends State<ProcessCard> {
   void deleteProcess(BuildContext context, int id) {
     context.read<ProcessDataBase>().deleteProcess(id: id);
   }
@@ -16,9 +21,9 @@ class ProcessCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     String processInitDateAsString =
-        dateTimeToString(context, process.initDate);
+        dateTimeToString(context, widget.process.initDate);
     String processInitTimeAsString =
-        hourTimeToString(context, process.initDate);
+        hourTimeToString(context, widget.process.initDate);
     return Padding(
       padding: const EdgeInsets.only(left: 15, right: 15, top: 15),
       child: Container(
@@ -49,19 +54,19 @@ class ProcessCard extends StatelessWidget {
                 ),
                 IconButton(
                     onPressed: () {
-                      deleteProcess(context, process.id);
+                      deleteProcess(context, widget.process.id);
                     },
                     icon: Icon(Icons.delete)),
               ],
             ),
             Text(
-              process.processName,
+              widget.process.processName,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 fontSize: 20,
               ),
             ),
-            ProcessCardCounter(process: process)
+            ProcessCardCounter(process: widget.process)
           ],
         ),
       ),

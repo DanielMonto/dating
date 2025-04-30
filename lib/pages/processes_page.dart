@@ -34,33 +34,32 @@ class _ProcessesPageState extends State<ProcessesPage> {
     final processDatabase = context.watch<ProcessDataBase>();
     List<Process> currentProcess = processDatabase.currentProcess;
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text(AppLocalizations.of(context)!.title),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: createNewProcess,
-        child: const Icon(Icons.add),
-      ),
-      drawer: MainDrawer(),
-      body: currentProcess.isNotEmpty
-          ? ListView.builder(
-              itemCount: currentProcess.length,
-              itemBuilder: (context, index) {
-                return ProcessCard(process: currentProcess[index]);
-              },
-            )
-          : Center(
-              child: Column(
-                children: [
-                  Text(AppLocalizations.of(context)!.noneProcessAddedYet),
-                  IconButton(
-                    onPressed: createNewProcess,
-                    icon: Icon(Icons.add),
-                  ),
-                ],
-              ),
-            ),
-    );
+        appBar: AppBar(
+          centerTitle: true,
+          title: Text(AppLocalizations.of(context)!.title),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: createNewProcess,
+          child: const Icon(Icons.add),
+        ),
+        drawer: MainDrawer(),
+        body: currentProcess.isEmpty
+            ? Center(
+                child: Column(
+                  children: [
+                    Text(AppLocalizations.of(context)!.noneProcessAddedYet),
+                    IconButton(
+                      onPressed: createNewProcess,
+                      icon: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              )
+            : ListView.builder(
+                itemCount: currentProcess.length,
+                itemBuilder: (context, index) {
+                  return ProcessCard(process: currentProcess[index]);
+                },
+              ));
   }
 }
