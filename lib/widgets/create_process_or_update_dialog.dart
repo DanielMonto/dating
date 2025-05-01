@@ -1,24 +1,36 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:process/func.dart';
+import 'package:process/models/process.dart';
 import 'package:process/models/process_database.dart';
 import 'package:provider/provider.dart';
 
-class CreateProcessDialog extends StatefulWidget {
-  const CreateProcessDialog({super.key});
+class CreateProcessOrUpdateDialog extends StatefulWidget {
+  final Process? process;
+  const CreateProcessOrUpdateDialog({super.key, this.process});
 
   @override
-  State<CreateProcessDialog> createState() => _CreateProcessDialogState();
+  State<CreateProcessOrUpdateDialog> createState() =>
+      _CreateProcessOrUpdateDialogState();
 }
 
-class _CreateProcessDialogState extends State<CreateProcessDialog> {
+class _CreateProcessOrUpdateDialogState
+    extends State<CreateProcessOrUpdateDialog> {
   final TextEditingController _processNameController = TextEditingController();
-  DateTime _dateController = DateTime.now();
+  late DateTime _dateController;
+  late bool _isCreateDialog;
 
   @override
   void initState() {
     super.initState();
-    _dateController = DateTime.now();
+    if (widget.process != null) {
+      _isCreateDialog = false;
+      _dateController = widget.process!.initDate;
+      _processNameController.text = widget.process!.processName;
+    } else {
+      _isCreateDialog = true;
+      _dateController = DateTime.now();
+    }
   }
 
   @override
@@ -53,10 +65,18 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
     });
   }
 
-  void addProcess(BuildContext context) {
-    context.read<ProcessDataBase>().addProcess(
-        initDateChooseFromUser: _dateController,
-        processNameFromUser: _processNameController.text);
+  void addOrUpdateProcess(BuildContext context) {
+    if (_isCreateDialog) {
+      context.read<ProcessDataBase>().addProcess(
+          initDateChooseFromUser: _dateController,
+          processNameFromUser: _processNameController.text);
+    } else {
+      context.read<ProcessDataBase>().updateProcess(
+            id: widget.process!.id,
+            newInitDateFromUser: _dateController,
+            newProcessNameFromUser: _processNameController.text,
+          );
+    }
     _processNameController.clear();
     Navigator.of(context).pop();
   }
@@ -67,7 +87,11 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
     String hourAsString = hourTimeToString(context, _dateController);
     AppLocalizations appLocalizations = AppLocalizations.of(context)!;
     return AlertDialog(
-      title: Text(appLocalizations.createNewProcess),
+      title: Text(
+        _isCreateDialog
+            ? appLocalizations.createNewProcess
+            : appLocalizations.updateProcess,
+      ),
       content: SizedBox(
         height: 200,
         child: SingleChildScrollView(
@@ -83,8 +107,9 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
                 onPressed: () async {
                   DateTime? datePicked = await showDatePicker(
                     context: context,
+                    initialDate: _dateController,
                     firstDate: DateTime(-3000),
-                    lastDate: _dateController,
+                    lastDate: DateTime.now(),
                   );
                   changeDate(datePicked);
                 },
@@ -142,14 +167,16 @@ class _CreateProcessDialogState extends State<CreateProcessDialog> {
         ),
         MaterialButton(
           onPressed: () {
-            if (_processNameController.text.isEmpty) {
+            if (_processNameController.text.trim().isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Center(child: Text(appLocalizations.giveAName))));
             } else if (_processNameController.text.isNotEmpty) {
-              addProcess(context);
+              addOrUpdateProcess(context);
             }
           },
-          child: Text(appLocalizations.create),
+          child: Text(
+            _isCreateDialog ? appLocalizations.create : appLocalizations.update,
+          ),
         ),
       ],
     );

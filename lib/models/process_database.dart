@@ -20,7 +20,8 @@ class ProcessDataBase with ChangeNotifier {
       ..initDate = initDateChooseFromUser
       ..processName = processNameFromUser;
     await isar.writeTxn(() => isar.process.put(newProcess));
-    await fetchProcess();
+    currentProcess.add(newProcess);
+    notifyListeners();
   }
 
   Future<void> fetchProcess() async {
@@ -30,23 +31,29 @@ class ProcessDataBase with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateProcessInitDate({
+  Future<void> updateProcess({
     required int id,
     required DateTime newInitDateFromUser,
     required String newProcessNameFromUser,
-    required bool processCompletedFromUser,
   }) async {
     final existingProcess = await isar.process.get(id);
     if (existingProcess == null) return;
     existingProcess.initDate = newInitDateFromUser;
     existingProcess.processName = newProcessNameFromUser;
-    existingProcess.processCompleted = processCompletedFromUser;
     await isar.writeTxn(() => isar.process.put(existingProcess));
-    await fetchProcess();
+    final index = currentProcess.indexWhere((process) => process.id == id);
+    if (index != -1) {
+      currentProcess[index] = existingProcess;
+      notifyListeners();
+    }
   }
 
   Future<void> deleteProcess({required int id}) async {
     await isar.writeTxn(() => isar.process.delete(id));
-    await fetchProcess();
+    final index = currentProcess.indexWhere((process) => process.id == id);
+    if (index != -1) {
+      currentProcess.removeAt(index);
+      notifyListeners();
+    }
   }
 }

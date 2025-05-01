@@ -1,6 +1,6 @@
 import 'package:process/models/process.dart';
 import 'package:process/models/process_database.dart';
-import 'package:process/widgets/create_process_dialog.dart';
+import 'package:process/widgets/create_process_or_update_dialog.dart';
 import 'package:process/widgets/main_drawer.dart';
 import 'package:process/widgets/process_card/process_card.dart';
 import 'package:flutter/material.dart';
@@ -26,7 +26,8 @@ class _ProcessesPageState extends State<ProcessesPage> {
   }
 
   void createNewProcess() {
-    showDialog(context: context, builder: (context) => CreateProcessDialog());
+    showDialog(
+        context: context, builder: (context) => CreateProcessOrUpdateDialog());
   }
 
   @override
@@ -55,11 +56,14 @@ class _ProcessesPageState extends State<ProcessesPage> {
                   ],
                 ),
               )
-            : ListView.builder(
-                itemCount: currentProcess.length,
-                itemBuilder: (context, index) {
-                  return ProcessCard(process: currentProcess[index]);
-                },
+            : Padding(
+                padding: const EdgeInsets.only(bottom: 15),
+                child: ListView.builder(
+                  itemCount: currentProcess.length,
+                  itemBuilder: (context, index) {
+                    return ProcessCard(process: currentProcess[index]);
+                  },
+                ),
               ));
   }
 }

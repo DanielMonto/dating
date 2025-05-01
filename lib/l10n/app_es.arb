@@ -60,5 +60,6 @@
     "started": "Inició",
     "giveAName":"Por favor un nombre",
     "giveAProcessName":"Escribe un nombre para el proceso",
-    "ended":"Terminado"
+    "ended":"Terminado",
+    "updateProcess":"Actualizar proceso"
 }
