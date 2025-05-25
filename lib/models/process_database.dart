@@ -48,6 +48,18 @@ class ProcessDataBase with ChangeNotifier {
     }
   }
 
+  Future<void> toggleProcessCompleted({required int id}) async {
+    final existingProcess = await isar.process.get(id);
+    if (existingProcess == null) return;
+    existingProcess.processCompleted = !existingProcess.processCompleted;
+    await isar.writeTxn(() => isar.process.put(existingProcess));
+    final index = currentProcess.indexWhere((process) => process.id == id);
+    if (index != -1) {
+      currentProcess[index] = existingProcess;
+      notifyListeners();
+    }
+  }
+
   Future<void> deleteProcess({required int id}) async {
     await isar.writeTxn(() => isar.process.delete(id));
     final index = currentProcess.indexWhere((process) => process.id == id);

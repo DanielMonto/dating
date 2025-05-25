@@ -61,5 +61,8 @@
     "giveAName": "Please give a name",
     "giveAProcessName":"Write a name for the process",
     "ended":"Ended",
-    "updateProcess" : "Update process"
+    "updateProcess" : "Update process",
+    "deleteAll":"Delete all",
+    "ongoing":"Ongoing",
+    "finished":"Finished"
 }

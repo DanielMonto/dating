@@ -86,6 +86,10 @@ class _ProcessCardState extends State<ProcessCard> {
         dateTimeToString(context, widget.process.initDate);
     String processInitTimeAsString =
         hourTimeToString(context, widget.process.initDate);
+    bool processCompleted = widget.process.processCompleted;
+    String processAccomplished =
+        processCompleted ? appLocalizations.finished : appLocalizations.ongoing;
+    Color borderColor = processCompleted ? Colors.red : Colors.green;
     return Padding(
       padding: const EdgeInsets.only(
         left: 15,
@@ -111,12 +115,14 @@ class _ProcessCardState extends State<ProcessCard> {
                     children: [
                       Text(
                         processInitDateAsString,
-                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis, fontSize: 10),
                         maxLines: 1,
                       ),
                       Text(
                         processInitTimeAsString,
-                        style: TextStyle(overflow: TextOverflow.ellipsis),
+                        style: TextStyle(
+                            overflow: TextOverflow.ellipsis, fontSize: 10),
                         maxLines: 1,
                       ),
                     ],
@@ -133,8 +139,22 @@ class _ProcessCardState extends State<ProcessCard> {
               widget.process.processName,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
-                fontSize: 20,
+                fontSize: 25,
               ),
+            ),
+            TextButton(
+              style: TextButton.styleFrom(
+                side: BorderSide(
+                  color: borderColor,
+                  width: 1.5,
+                ),
+              ),
+              onPressed: () {
+                context
+                    .read<ProcessDataBase>()
+                    .toggleProcessCompleted(id: widget.process.id);
+              },
+              child: Text(processAccomplished),
             ),
             Consumer<GlobalTimer>(builder: (context, timer, _) {
               DateTime now = timer.now;

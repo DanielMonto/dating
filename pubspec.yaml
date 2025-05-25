@@ -41,6 +41,7 @@ dependencies:
   path_provider:
   shared_preferences:
   provider:
+  uuid:
 
 dev_dependencies:
   flutter_test:
